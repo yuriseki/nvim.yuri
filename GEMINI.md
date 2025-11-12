@@ -2,6 +2,8 @@
 
 This is a Neovim configuration based on `kickstart.nvim`. It is intended to be a starting point for a personal Neovim setup. The configuration is written in Lua and uses `lazy.nvim` for plugin management. The main configuration file is `init.lua`, with `init-quickstart.lua` being another potential entry point.
 
+- The user's goal is to configure this neovim project to make it as similar as similar to InteliJ Idea Ultimate.
+
 # Building and Running
 
 This is a Neovim configuration, not a standalone application. To "run" it, you need to:
