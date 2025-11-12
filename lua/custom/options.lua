@@ -1,0 +1,1 @@
+vim.opt.relativenumber = false -- Disable relative line numbers

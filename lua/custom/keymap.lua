@@ -1,0 +1,3 @@
+-- Add your custom keymaps here
+-- for example:
+-- vim.keymap.set('n', '<leader>f', '<cmd>echo "hello"<CR>')
