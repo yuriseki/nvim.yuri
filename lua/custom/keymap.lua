@@ -6,8 +6,13 @@ local map = vim.keymap.set
 
 map('n', ';', ':', { desc = 'CMD enter command mode' })
 map('i', 'jk', '<ESC>')
+
+-- Save File
 map('i', '<C-s>', '<cmd> w <cr>') -- Save with crtl+s
 map('n', '<C-s>', '<cmd> w <cr>') -- Save with crtl+s
+
+-- Delete single character without copying into register.
+map('n', 'x', '"_x', otps)
 
 -- Move highlighted content up and down
 map('v', 'J', ":m '>+1<CR>gv=gv")
