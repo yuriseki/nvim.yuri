@@ -18,3 +18,9 @@ TODO: Find a way to make it work
     - https://www.youtube.com/watch?v=KYDG3AHgYEs&t=247s
     - https://github.com/hendrikmi/neovim-kickstart-config
 
+
+## LSP
+
+To install a new LSP serve, execute `:LspInstall` with a file using the language.
+
+Ex: To install the Python LSP, execute that command with the `test.py` file opened.
