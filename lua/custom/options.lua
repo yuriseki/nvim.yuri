@@ -5,3 +5,5 @@ vim.opt.spell = true -- Enable spell checking
 vim.opt.scrolloff = 10
 vim.opt.wrap = false
 vim.opt.linebreak = true
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'

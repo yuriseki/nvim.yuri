@@ -8,7 +8,6 @@ local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 map('n', ';', ':', { desc = 'CMD enter command mode' })
-map('i', 'jk', '<ESC>')
 
 -- File manipulation
 map('i', '<C-s>', '<cmd> w <cr><esc>') -- Save with crtl+s and go to normal mode
