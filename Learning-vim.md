@@ -11,3 +11,10 @@ TODO: Find a way to make it work
 - Half of a page navigation: Up: `<ctrl> u`, Down `<ctrl> + d`
 - Jump to a line: type line number and then `gg`
 - Center page in the cursor line: `zz`
+
+## Inspiring repositories
+
+- Full newovim from Scratch 2025
+    - https://www.youtube.com/watch?v=KYDG3AHgYEs&t=247s
+    - https://github.com/hendrikmi/neovim-kickstart-config
+

@@ -2,8 +2,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-
-
 -- Load core options
 require 'core.options'
 
