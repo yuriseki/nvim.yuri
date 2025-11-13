@@ -11,8 +11,8 @@ require 'core.keymaps'
 -- Setup plugin manager
 require 'core.plugins'
 
--- Load custom keymaps
-require 'custom.keymap'
-
 -- Load custom options
 require 'custom.options'
+
+-- Load custom keymaps
+require 'custom.keymap'

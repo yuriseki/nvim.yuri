@@ -1,3 +1,4 @@
+vim.g.have_nerd_font = true -- I do have nerd fonts
 vim.opt.autochdir = false -- Don't change the current directory to the file's directory
 vim.opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim
 vim.opt.completeopt = 'menu,menuone,noselect' -- Options for insert mode completion
@@ -22,8 +23,8 @@ vim.opt.mouse = 'a' -- Enable mouse support
 vim.opt.number = true -- Show line numbers
 vim.opt.pumblend = 10 -- Blend the popup menu with the background
 vim.opt.pumheight = 10 -- Maximum number of items to show in the popup menu
-vim.opt.relativenumber = true -- Show relative line numbers
-vim.opt.scrolloff = 4 -- Lines of context above/below cursor
+vim.opt.relativenumber = false -- Show relative line numbers
+-- vim.opt.scrolloff = 4 -- Lines of context above/below cursor
 vim.opt.shiftround = true -- Round indent to a multiple of 'shiftwidth'
 vim.opt.shiftwidth = 2 -- Size of an indent
 vim.opt.showmode = false -- Don't show the current mode
