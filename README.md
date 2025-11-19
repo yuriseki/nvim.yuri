@@ -1,4 +1,8 @@
-# 💤 LazyVim
+# Yuri's Neovim configuration - Bases on 💤 LazyVim
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+Started with [LazyVim](https://github.com/LazyVim/LazyVim) template.
+Refer to the [documentation](https://lazyvim.github.io/installation).
+
+Debug working for:
+
+- Python
