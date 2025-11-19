@@ -11,3 +11,7 @@ vim.keymap.set("n", "<leader>ag", ":SpellAddGlobal<CR>", {
 vim.keymap.set("n", "<leader>ap", ":SpellAddProject<CR>", {
   desc = "Add word to PROJECT dictionary",
 })
+
+vim.keymap.set("n", "<leader>aw", function()
+  vim.cmd("CodebookAddWord")
+end, { desc = "Add word to Codebook dictionary" })

@@ -1,0 +1,16 @@
+return {
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      autoformat = false, -- override the default TRUE
+    },
+    config = function(_, opts)
+      -- override LazyVim's autoformat toggle
+      require("lazyvim.plugins.lsp.format").autoformat = false
+
+      -- Let LazyVim run the rest of its LSP setup
+      require("lazyvim.plugins.lsp").setup(opts)
+    end,
+  },
+}
+
