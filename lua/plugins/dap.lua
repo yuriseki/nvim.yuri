@@ -1,10 +1,33 @@
 return {
   {
-    "mfussenegger/nvim-dap",
+    "rcarriga/nvim-dap-ui",
     dependencies = {
-      "rcarriga/nvim-dap-ui",
+      "mfussenegger/nvim-dap",
       "theHamsta/nvim-dap-virtual-text",
     },
+    -- -- Configure the UI
+    -- opts = function(_, opts)
+    --   opts.layouts = {
+    --     {
+    --       position = "bottom",
+    --       size = 15,
+    --       elements = {
+    --         { id = "scopes", size = 1.0 },
+    --       },
+    --     },
+    --     {
+    --       position = "right",
+    --       size = 40,
+    --       elements = {
+    --         "repl",
+    --         "breakpoints",
+    --         "stacks",
+    --         "watches",
+    --       },
+    --     },
+    --   }
+    -- end,
+
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
