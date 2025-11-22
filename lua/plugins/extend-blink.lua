@@ -1,6 +1,6 @@
 -- lua/plugins/blink.lua
 return {
-  "Saghen/blink.cmp",
+  "saghen/blink.cmp",
 
   dependencies = {
     "L3MON4D3/LuaSnip",
