@@ -3,7 +3,7 @@
 
 local function is_drupal_root()
   local root = vim.fn.getcwd()
-  return vim.fn.isdirectory(vim.fn.expand(root .. "/web/core")) == 1
+  return vim.fn.isdirectory(vim.fn.expand(root .. "/web/core/lib/Drupal")) == 1
 end
 
 local function project_root()
@@ -13,9 +13,71 @@ local function project_root()
   return root or vim.fn.getcwd()
 end
 
--- if true then return {} end
+if not is_drupal_root() then
+  return {}
+end
 
+-- Define the PHPCS inside the project.
+local function project_phpcs()
+  local root = project_root()
+  -- local vendor_phpcs = root .. "/vendor/bin/phpcs"
+  local vendor_phpcs = "/home/yuri/.config/composer/vendor/bin/phpcs"
+  if vim.fn.executable(vendor_phpcs) == 1 then
+    return vendor_phpcs
+  end
+  return "phpcs" -- fallback
+end
+
+-- Define the PHPBCF inside the project.
+local function project_phpcbf()
+  local root = project_root()
+  -- local vendor_phpcbf = root .. "/vendor/bin/phpcbf"
+  local vendor_phpcbf = "/home/yuri/.config/composer/vendor/bin/phpcbf"
+  if vim.fn.executable(vendor_phpcbf) == 1 then
+    return vendor_phpcbf
+  end
+  return "phpcbf" -- fallback
+end
+
+-----------------------------------------------------------
+-- Paths
+-----------------------------------------------------------
+local ROOT = project_root()
+local PATHS = {
+  vendor = ROOT .. "/vendor",
+  core = ROOT .. "/web/core",
+  modules = ROOT .. "/web/modules",
+  themes = ROOT .. "/web/themes",
+}
+
+local function existing_paths(tbl)
+  local out = {}
+  for _, p in ipairs(tbl) do
+    if vim.fn.isdirectory(p) == 1 then
+      table.insert(out, p)
+    end
+  end
+  return out
+end
+
+-----------------------------------------------------------
+-- Core Plugin Config
+-----------------------------------------------------------
 return {
+  -- ------------------------------------------------------
+  --   -- Define Drupal SubGroup in the Code group.
+  -- ------------------------------------------------------
+  {
+    "folke/which-key.nvim",
+    -- optional = true,
+    opts = function()
+      local wk = require("which-key")
+      wk.add({
+        { "\\d", group = "[D]rupal" },
+      })
+    end,
+  },
+
   -- 1) LSP servers configuration (Intelephense + yaml + twig)
   {
     "neovim/nvim-lspconfig",
@@ -35,7 +97,12 @@ return {
             intelephense = {
               files = { maxSize = 5000000 },
               environment = {
-                includePaths = {}, -- filled in setup below per project
+                includePaths = existing_paths({
+                  PATHS.vendor,
+                  PATHS.core,
+                  PATHS.modules,
+                  PATHS.themes,
+                }),
               },
               stubs = {
                 -- standard php stubs
@@ -80,46 +147,6 @@ return {
         twig = {},
       },
       setup = {
-        -- Hook to customize intelephense server options per-project
-        intelephense = function(server, opts)
-          local root = project_root()
-
-          -- Build includePaths automatically (vendor + web/core + web/modules + web/themes)
-          local includePaths = {}
-          local vendor = root .. "/vendor"
-          local web_core = root .. "/web/core"
-          local web_modules = root .. "/web/modules"
-          local web_themes = root .. "/web/themes"
-
-          if vim.fn.isdirectory(vendor) == 1 then
-            table.insert(includePaths, vendor)
-          end
-          if vim.fn.isdirectory(web_core) == 1 then
-            table.insert(includePaths, web_core)
-          end
-          if vim.fn.isdirectory(web_modules) == 1 then
-            table.insert(includePaths, web_modules)
-          end
-          if vim.fn.isdirectory(web_themes) == 1 then
-            table.insert(includePaths, web_themes)
-          end
-
-          if #includePaths > 0 then
-            opts.settings = opts.settings or {}
-            opts.settings.intelephense = opts.settings.intelephense or {}
-            opts.settings.intelephense.environment = opts.settings.intelephense.environment or {}
-            opts.settings.intelephense.environment.includePaths = includePaths
-          end
-
-          -- ensure formatting is disabled
-          opts.on_attach = function(client, bufnr)
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          end
-
-          require("lspconfig").intelephense.setup(opts)
-          return true
-        end,
         -- default fallback for other servers
         ["*"] = function(server, opts)
           require("lspconfig")[server].setup(opts)
@@ -173,75 +200,138 @@ return {
   -- 3) helper commands, keymaps and telescope wrappers (only active in drupal projects)
   {
     "nvim-lua/plenary.nvim",
-    config = function()
-      -- only configure commands/keymaps if in a Drupal project
-      if not is_drupal_root() then
-        return
+    keys = {
+      { "\\dc", ":DrupalLint<CR>", desc = "Drupal: Lint file (PHPCS)" },
+      { "\\df", ":DrupalFix<CR>", desc = "Drupal: Fix file (PHPCBF)" },
+    },
+    config = function(_, opts)
+      -----------------------------------------------------
+      -- PHPCS
+      -----------------------------------------------------
+      local function drupal_phpcs()
+        local file = vim.fn.expand("%:p")
+        local cmd = string.format(project_phpcs() .. " --standard=Drupal,DrupalPractice %q", file)
+        vim.cmd("cexpr system('" .. cmd .. "')")
+        vim.cmd("copen")
       end
 
-      local function run_phpcs_on_file()
-        local f = vim.fn.expand("%:p")
-        local cmd = string.format("phpcs --standard=Drupal,DrupalPractice --report=json %q", f)
-        -- run and parse output into quickfix
-        local output = vim.fn.systemlist(cmd)
-        -- if phpcs errors, open quickfix using the regular phpcs CLI parser (fallback to quickfix)
-        if vim.v.shell_error ~= 0 then
-          vim.cmd("cexpr system('" .. cmd .. "')")
-          vim.cmd("copen")
-        else
-          print("PHPCS: no issues found for " .. f)
-        end
+      -----------------------------------------------------
+      -- PHPCBF
+      -----------------------------------------------------
+      local function drupal_phpcbf()
+        local file = vim.fn.expand("%:p")
+        vim.fn.system(string.format(project_phpcbf() .. " --standard=Drupal,DrupalPractice " .. file))
+        vim.cmd("edit!") -- reload buffer
       end
 
-      local function run_phpcbf_on_file()
-        local f = vim.fn.expand("%:p")
-        local cmd = string.format("phpcbf --standard=Drupal,DrupalPractice %q", f)
-        vim.cmd("silent ! " .. cmd)
-        vim.cmd("edit!") -- reload buffer after fix
-        print("PHPCBF ran on " .. f)
-      end
-
-      -- Drupal commands
-      vim.api.nvim_create_user_command("DrupalLint", function()
-        run_phpcs_on_file()
-      end, { desc = "Run PHPCS (Drupal standards) on current file" })
-
-      vim.api.nvim_create_user_command("DrupalFix", function()
-        run_phpcbf_on_file()
-      end, { desc = "Run PHPCBF (Drupal) on current file" })
-
-      vim.api.nvim_create_user_command("DrupalCR", function()
-        -- try drush, fallback to vendor/bin/drupal if present
-        local root = project_root()
+      -----------------------------------------------------
+      -- Cache rebuild
+      -----------------------------------------------------
+      local function drupal_cache_rebuild()
         if vim.fn.executable("drush") == 1 then
-          vim.fn.jobstart({ "drush", "cr" }, { cwd = root })
-          print("drush cr started")
-        elseif vim.fn.executable(root .. "/vendor/bin/drupal") == 1 then
-          vim.fn.jobstart({ root .. "/vendor/bin/drupal", "cache:rebuild" }, { cwd = root })
-          print("vendor/bin/drupal cache:rebuild started")
-        else
-          print("No drush or drupal console found in project")
+          vim.fn.jobstart({ "drush", "cr" }, { cwd = ROOT })
+          return
         end
-      end, { desc = "Drupal cache rebuild (drush cr or drupal cache:rebuild)" })
+        if vim.fn.executable(ROOT .. "/vendor/bin/drupal") == 1 then
+          vim.fn.jobstart({ ROOT .. "/vendor/bin/drupal", "cache:rebuild" }, { cwd = ROOT })
+          return
+        end
+        print("No drush or drupal console found")
+      end
 
-      -- Keymaps
-      vim.keymap.set("n", "<leader>cl", ":DrupalLint<CR>", { desc = "Drupal: Run PHPCS on file" })
-      vim.keymap.set("n", "<leader>cf", ":DrupalFix<CR>", { desc = "Drupal: Run PHPCBF on file" })
-      vim.keymap.set("n", "<leader>cc", ":DrupalCR<CR>", { desc = "Drupal: Cache Rebuild" })
+      -----------------------------------------------------
+      -- Commands
+      -----------------------------------------------------
+      vim.api.nvim_create_user_command("DrupalLint", drupal_phpcs, { desc = "Run PHPCS (Drupal)" })
+      vim.api.nvim_create_user_command("DrupalFix", drupal_phpcbf, { desc = "Run PHPCBF (Drupal)" })
+      vim.api.nvim_create_user_command("DrupalCR", drupal_cache_rebuild, { desc = "Drupal cache rebuild" })
 
-      -- Telescope wrappers (if telescope is installed)
-      if pcall(require, "telescope.builtin") then
-        local t = require("telescope.builtin")
+      -----------------------------------------------------
+      -- Telescope Helpers (optional)
+      -----------------------------------------------------
+      local ok, telescope = pcall(require, "telescope.builtin")
+      if ok then
         vim.api.nvim_create_user_command("DrupalFindTwig", function()
-          t.live_grep({ default_text = "\\.twig$", search_dirs = { project_root() } })
-        end, { desc = "Find Twig templates" })
+          telescope.live_grep({ default_text = "\\.twig$", search_dirs = { ROOT } })
+        end, {})
 
         vim.api.nvim_create_user_command("DrupalFindServices", function()
-          t.live_grep({ default_text = "services.yml", search_dirs = { project_root() } })
-        end, { desc = "Find services.yml" })
+          telescope.live_grep({ default_text = "services.yml", search_dirs = { ROOT } })
+        end, {})
       end
     end,
   },
+  -- {
+  --   "nvim-lua/plenary.nvim",
+  --   config = function()
+  --     -- only configure commands/keymaps if in a Drupal project
+  --     if not is_drupal_root() then
+  --       return
+  --     end
+  --
+  --     local function run_phpcs_on_file()
+  --       local f = vim.fn.expand("%:p")
+  --       local cmd = string.format("phpcs --standard=Drupal,DrupalPractice --report=json %q", f)
+  --       -- run and parse output into quickfix
+  --       local output = vim.fn.systemlist(cmd)
+  --       -- if phpcs errors, open quickfix using the regular phpcs CLI parser (fallback to quickfix)
+  --       if vim.v.shell_error ~= 0 then
+  --         vim.cmd("cexpr system('" .. cmd .. "')")
+  --         vim.cmd("copen")
+  --       else
+  --         print("PHPCS: no issues found for " .. f)
+  --       end
+  --     end
+  --
+  --     local function run_phpcbf_on_file()
+  --       local f = vim.fn.expand("%:p")
+  --       local cmd = string.format("phpcbf --standard=Drupal,DrupalPractice %q", f)
+  --       vim.cmd("silent ! " .. cmd)
+  --       vim.cmd("edit!") -- reload buffer after fix
+  --       print("PHPCBF ran on " .. f)
+  --     end
+  --
+  --     -- Drupal commands
+  --     vim.api.nvim_create_user_command("DrupalLint", function()
+  --       run_phpcs_on_file()
+  --     end, { desc = "Run PHPCS (Drupal standards) on current file" })
+  --
+  --     vim.api.nvim_create_user_command("DrupalFix", function()
+  --       run_phpcbf_on_file()
+  --     end, { desc = "Run PHPCBF (Drupal) on current file" })
+  --
+  --     vim.api.nvim_create_user_command("DrupalCR", function()
+  --       -- try drush, fallback to vendor/bin/drupal if present
+  --       local root = project_root()
+  --       if vim.fn.executable("drush") == 1 then
+  --         vim.fn.jobstart({ "drush", "cr" }, { cwd = root })
+  --         print("drush cr started")
+  --       elseif vim.fn.executable(root .. "/vendor/bin/drupal") == 1 then
+  --         vim.fn.jobstart({ root .. "/vendor/bin/drupal", "cache:rebuild" }, { cwd = root })
+  --         print("vendor/bin/drupal cache:rebuild started")
+  --       else
+  --         print("No drush or drupal console found in project")
+  --       end
+  --     end, { desc = "Drupal cache rebuild (drush cr or drupal cache:rebuild)" })
+  --
+  --     -- Keymaps
+  --     vim.keymap.set("n", "<leader>cl", ":DrupalLint<CR>", { desc = "Drupal: Run PHPCS on file" })
+  --     vim.keymap.set("n", "<leader>cf", ":DrupalFix<CR>", { desc = "Drupal: Run PHPCBF on file" })
+  --     vim.keymap.set("n", "<leader>cc", ":DrupalCR<CR>", { desc = "Drupal: Cache Rebuild" })
+  --
+  --     -- Telescope wrappers (if telescope is installed)
+  --     if pcall(require, "telescope.builtin") then
+  --       local t = require("telescope.builtin")
+  --       vim.api.nvim_create_user_command("DrupalFindTwig", function()
+  --         t.live_grep({ default_text = "\\.twig$", search_dirs = { project_root() } })
+  --       end, { desc = "Find Twig templates" })
+  --
+  --       vim.api.nvim_create_user_command("DrupalFindServices", function()
+  --         t.live_grep({ default_text = "services.yml", search_dirs = { project_root() } })
+  --       end, { desc = "Find services.yml" })
+  --     end
+  --   end,
+  -- },
 
   -- 4) Optional: ensure mason installs servers commonly used for this preset
   {
