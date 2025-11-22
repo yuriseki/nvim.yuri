@@ -304,19 +304,19 @@ return {
         {
           type = "php",
           request = "launch",
-          name = "Listen for Xdebug in DDEV (ddev xdebug on)",
+          name = "Listen for Xdebug in Lando (Lando xdebug on)",
           port = 9003,
           pathMappings = {
-            ["/var/www/html"] = "${workspaceFolder}",
+            ["/app"] = "${workspaceFolder}",
           },
         },
         {
           type = "php",
           request = "launch",
-          name = "Listen for Xdebug in Lando (Lando xdebug on)",
+          name = "Listen for Xdebug in DDEV (ddev xdebug on)",
           port = 9003,
           pathMappings = {
-            ["/app"] = "${workspaceFolder}",
+            ["/var/www/html"] = "${workspaceFolder}",
           },
         },
         {
@@ -335,20 +335,6 @@ return {
           },
         },
       }
-
-      --   dap.listeners.after.event_initialized["dapui_config"] = function()
-      --     dapui.open()
-      --   end
-      --
-      --   dap.listeners.before.event_terminated["dapui_config"] = function()
-      --     dapui.close()
-      --   end
-      --
-      --   dap.listeners.before.event_exited["dapui_config"] = function()
-      --     dapui.close()
-      --   end
-      --
-      --   require("dapui").setup()
     end,
   },
 

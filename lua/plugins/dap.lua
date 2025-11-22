@@ -3,6 +3,7 @@ return {
     "rcarriga/nvim-dap-ui",
     dependencies = {
       "mfussenegger/nvim-dap",
+      { "theHamsta/nvim-dap-virtual-text", config = true }, -- Displays the variable values as a virtual text.
     },
 
     keys = {
@@ -93,6 +94,32 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         dapui.close()
       end
+
+
+      -- ---------------------------------------------------------
+      -- Configure Layout
+      -- ---------------------------------------------------------
+      opts.layouts = {
+        {
+          elements = {
+            { id = "console",     size = 0.25 },
+            { id = "breakpoints", size = 0.25 },
+            { id = "stacks",      size = 0.25 },
+            { id = "watches",     size = 0.25 },
+          },
+          size = 40,
+          position = "left", -- Can be "left" or "right"
+
+        },
+        {
+          elements = {
+            "scopes",
+            "repl",
+          },
+          size = 10,
+          position = "bottom", -- Can be "bottom" or "top"
+        }
+      }
     end,
   },
 }
