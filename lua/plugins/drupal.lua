@@ -260,12 +260,22 @@ return {
   },
 
   {
+    "jay-babu/mason-nvim-dap.nvim",
+    opts = {
+      automatic_installation = true,
+      ensure_installed = {
+        "php-debug-adapter",
+      },
+    },
+  },
+
+  {
     "mfussenegger/nvim-dap",
-    -- dependencies = {
-    --   "rcarriga/nvim-dap-ui",
-    --   "nvim-neotest/nvim-nio",
-    --   "theHamsta/nvim-dap-virtual-text",
-    -- },
+    dependencies = {
+      --   "rcarriga/nvim-dap-ui",
+      --   "nvim-neotest/nvim-nio",
+      --   "theHamsta/nvim-dap-virtual-text",
+    },
     optional = true,
     config = function()
       local dap = require("dap")
@@ -369,4 +379,24 @@ function ${1:MODULE}_form_alter(&$form, \\Drupal\\Core\\Form\\FormStateInterface
       })
     end,
   },
+
+  -- -- 6 Disable formatting on save:
+  -- {
+  --   "stevearc/conform.nvim",
+  --   opts = function(_, opts)
+  --     if not is_drupal_root() then
+  --       return opts
+  --     end
+  --
+  --     -- Disable format on save
+  --     opts.format_on_save = false
+  --
+  --     -- Optional: disable specific formatters
+  --     opts.formatters_by_ft.yaml = {}
+  --     opts.formatters_by_ft.yml = {}
+  --     opts.formatters_by_ft.php = {} -- already disabled through null-ls/intelephense
+  --
+  --     return opts
+  --   end,
+  -- }
 }
