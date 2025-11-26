@@ -39,6 +39,15 @@ local function project_phpcbf()
   return "phpcbf" -- fallback
 end
 
+
+-----------------------------------------------------------
+-- Set PHPCS paths glocabbly
+-----------------------------------------------------------
+-- print("PHPCS: " .. project_phpcs())
+vim.g.nvim_phpcs_config_phpcs_path = project_phpcs()
+vim.g.nvim_phpcbf_config_phpcbf_path = project_phpcbf()
+
+
 -----------------------------------------------------------
 -- Paths
 -----------------------------------------------------------

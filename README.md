@@ -6,7 +6,8 @@ Refer to the [documentation](https://lazyvim.github.io/installation).
 ## TODO
 
 - [ ] Configure Shift + Tab to go to the left.
-- [ ] Configure autocompletion with Tab
+- [X] Configure autocompletion with Tab
+- [X] Configure Enter to select autocompletion, together with Tab
 
 ## Debug working for
 
