@@ -1,4 +1,3 @@
--- oioioi
 return {
   "antosha417/nvim-compare-with-clipboard",
   config = function()
@@ -11,11 +10,11 @@ return {
     -- Define the custom function to compare the current buffer with the clipboard
     local function compare_buffer_with_clipboard()
       -- 1. Select the entire buffer (ggVG)
-      vim.api.nvim_feedkeys('ggVG"by', "n", true)
+      vim.api.nvim_feedkeys("<ESC>ggVG", "n", true)
 
       -- 2. Yank the selection into register 'a' ("ay)
       -- 'normal! "ay' executes normal mode commands
-      -- vim.api.nvim_feedkeys('"by', "n", false)
+      vim.api.nvim_feedkeys('"by', "n", false)
 
       -- 3. Call the plugin's compare function for registers 'b' and '+'
       require("compare-with-clipboard").compare_registers("+", "b")
