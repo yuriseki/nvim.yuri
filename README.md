@@ -8,6 +8,9 @@ Refer to the [documentation](https://lazyvim.github.io/installation).
 - [ ] Configure Shift + Tab to go to the left.
 - [X] Configure autocompletion with Tab
 - [X] Configure Enter to select autocompletion, together with Tab
+- [ ] Add the ability grep search in a single directory.
+- [ ] Enable spell checking suggestion.
+- [ ] Add an option to format code only in selected content / git updated content.
 
 ## Debug working for
 
