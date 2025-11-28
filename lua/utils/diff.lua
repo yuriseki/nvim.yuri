@@ -67,6 +67,29 @@ function M.diff_with_clipboard()
   vim.api.nvim_set_current_win(right_win)
   vim.cmd("diffthis")
 
+  
+  --------------------------------------------------------------------
+  --  DIFF-LOCAL KEYMAPS
+  --------------------------------------------------------------------
+
+  local function map_diff_keys(win)
+    -- Accept hunk from left: Alt+Left
+    vim.keymap.set("n", "<M-Left>", function()
+      vim.api.nvim_set_current_win(win)
+      vim.cmd("diffget")
+    end, { buffer = vim.api.nvim_win_get_buf(win), silent = true })
+
+    -- Accept hunk from right: Alt+Right
+    vim.keymap.set("n", "<M-Right>", function()
+      vim.api.nvim_set_current_win(win)
+      vim.cmd("diffput")
+    end, { buffer = vim.api.nvim_win_get_buf(win), silent = true })
+  end
+
+  -- Apply mappings to both the left and right windows
+  map_diff_keys(left_win)
+  map_diff_keys(right_win)
+
   vim.notify(("Clipboard diff opened (register '%s')"):format(used_reg), vim.log.levels.INFO)
 end
 
