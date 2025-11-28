@@ -5,6 +5,11 @@ return {
     local wk = require("which-key")
     wk.add({
       { "\\", group = "Custom Backslask Mappings" },
+      
+      { "\\s", group = "[S]earch" },
+
+
+
       -- Add GitHuk to the regular <Leader>g group.
       -- { "<leader>gh", group = "Git [H]unk" },
       -- Pressing '\w' will save the file

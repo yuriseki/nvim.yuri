@@ -19,13 +19,13 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = "Keeps the cursor at the center when 
 
 -- Arrow keys exit insert mode and continue movement
 vim.keymap.set("i", "<Left>", "<Esc>h", { silent = true })
-vim.keymap.set("i", "<Right>", "<Esc>l", { silent = true })
-vim.keymap.set("i", "<Up>", "<Esc>k", { silent = true })
+-- vim.keymap.set("i", "<Right>", "<Esc>l", { silent = true })
+-- vim.keymap.set("i", "<Up>", "<Esc>k", { silent = true })
 vim.keymap.set("i", "<Down>", "<Esc>j", { silent = true })
 
--- Ctrl+Arrow keys keeps moving at word size.
-vim.keymap.set("i", "<C-Left>", "<Esc> bi", { silent = true })
-vim.keymap.set("i", "<C-Right>", "<Esc> wa", { silent = true })
+-- Alt+Arrow keys keeps moving at word size.
+vim.keymap.set("i", "<M-Left>", "<Esc> bi", { silent = true })
+vim.keymap.set("i", "<M-Right>", "<Esc> wa", { silent = true })
 
 -- Shift+Arrow selection (IntelliJ-style)
 vim.keymap.set("n", "<S-Left>", "v<Left>", { silent = true })
@@ -68,3 +68,17 @@ vim.keymap.set("n", "x", '"_x', opts) -- Delete whtouht adding to Clipboard.
 -- vim.keymap.set("i", "jj", "<Esc>", { noremap = true })
 -- vim.keymap.set("i", "kk", "<Esc>", { noremap = true })
 vim.keymap.set({ "i", "n", "v" }, "<C-a>", "<Esc>ggVG", { noremap = false, silent = true, desc = "Select All" })
+
+
+-- ----------------------------------------------------------------------------
+-- Search
+-- ----------------------------------------------------------------------------
+vim.keymap.set("n", "\\sf", function()
+  local folder = vim.fn.expand("%:p:h")
+  require("telescope.builtin").live_grep({ cwd = folder })
+end, { desc = "Search in [F]older of current file" })
+
+
+vim.keymap.set("n", "\\sd", function()
+  require("utils.search").directory_live_grep()
+end, { desc = "Search in [D]irectory (picker)" })
