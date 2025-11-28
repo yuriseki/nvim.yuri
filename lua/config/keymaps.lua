@@ -82,3 +82,13 @@ end, { desc = "Search in [F]older of current file" })
 vim.keymap.set("n", "\\sd", function()
   require("utils.search").directory_live_grep()
 end, { desc = "Search in [D]irectory (picker)" })
+
+
+
+-- ----------------------------------------------------------------------------
+-- Diffs - changed 
+-- ----------------------------------------------------------------------------
+vim.keymap.set('n', '\\dc', function ()
+  require("utils.diff").diff_with_clipboard()
+  
+end, {desc = "Diff current file with Clipboard (DiffView)"})

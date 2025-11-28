@@ -7,6 +7,7 @@ return {
       { "\\", group = "Custom Backslask Mappings" },
       
       { "\\s", group = "[S]earch" },
+      { "\\d", group = "[D]iff" },
 
 
 
