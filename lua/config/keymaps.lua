@@ -18,9 +18,9 @@ vim.keymap.set("n", "n", "nzzzv", { desc = "Keeps the cursor at the center when 
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Keeps the cursor at the center when navigating to the previous occurence" })
 
 -- Arrow keys exit insert mode and continue movement
-vim.keymap.set("i", "<Left>", "<Esc>h", { silent = true })
+-- vim.keymap.set("i", "<Left>", "<Esc>h", { silent = true })
 -- vim.keymap.set("i", "<Right>", "<Esc>l", { silent = true })
--- vim.keymap.set("i", "<Up>", "<Esc>k", { silent = true })
+vim.keymap.set("i", "<Up>", "<Esc>k", { silent = true })
 vim.keymap.set("i", "<Down>", "<Esc>j", { silent = true })
 
 -- Alt+Arrow keys keeps moving at word size.
