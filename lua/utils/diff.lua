@@ -6,7 +6,7 @@ local function get_clipboard_lines()
   for _, r in ipairs(regs) do
     local content = vim.fn.getreg(r)
     if content and content ~= "" then
-      local lines = vim.split(content, "\n", true)
+      local lines = vim.split(content, "\n", { plain = true })
       return lines, r
     end
   end
@@ -67,9 +67,8 @@ function M.diff_with_clipboard()
   vim.api.nvim_set_current_win(right_win)
   vim.cmd("diffthis")
 
-  
   --------------------------------------------------------------------
-  --  DIFF-LOCAL KEYMAPS
+  --  DIFF-LOCAL KEYMAPS.
   --------------------------------------------------------------------
 
   local function map_diff_keys(win)
